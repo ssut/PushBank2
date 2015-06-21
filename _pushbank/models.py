@@ -10,12 +10,12 @@ class BaseModel(Model):
     class Meta:
         database = db
 
-class Balance(BaseModel):
-    bank = CharField(unique=True, max_length=20)
+class Account(BaseModel):
+    account = CharField(unique=True, max_length=20)
     balance = BigIntegerField()
 
 class History(BaseModel):
-    bank = ForeignKeyField(Bank, related_name='histories')
+    account = ForeignKeyField(Account, related_name='histories')
     date = DateField(index=True)
     type = CharField(max_length=16)
     depositor = CharField(max_length=20)
@@ -25,4 +25,4 @@ class History(BaseModel):
     distributor = CharField(max_length=20)
 
 db.connect()
-db.create_tables([Balance, History], True)
+db.create_tables([Account, History], True)
