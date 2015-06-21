@@ -12,6 +12,7 @@ class BaseModel(Model):
 
 class Balance(BaseModel):
     bank = CharField(unique=True, max_length=20)
+    account = CharField(max_length=30)
     balance = BigIntegerField()
 
 class History(BaseModel):
