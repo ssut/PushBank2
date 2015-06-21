@@ -1,5 +1,6 @@
 import asyncio
 import json
+from datetime import datetime, timedelta
 
 import requests
 
@@ -7,8 +8,10 @@ from bs4 import BeautifulSoup
 
 en_name = 'hana'
 name = u'하나은행'
+
 _session = requests.Session()
 _url = 'https://open.hanabank.com/quick_service/inquiryAcct02_01.do'
+@asyncio.coroutine
 def query(account, password, resident):
     """
     하나은행 계좌 잔액 빠른조회. 빠른조회 서비스에 등록이 되어있어야 사용 가능.
@@ -45,6 +48,7 @@ def query(account, password, resident):
 
     try:
         r = _session.get(_url, params=params, timeout=10)
+        data = r.text
         success = True
     except:
         success = False

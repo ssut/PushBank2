@@ -1,5 +1,6 @@
 import asyncio
 import json
+from datetime import datetime, timedelta
 
 import requests
 
@@ -46,6 +47,7 @@ def query(account, password, resident, username):
 
     try:
         r = _session.get(_url, params=params, timeout=10)
+        data = r.text
         success = True
     except:
         success = False
