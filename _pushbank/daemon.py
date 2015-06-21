@@ -32,7 +32,7 @@ class PushBank:
         while 1:
             logger.debug('새로운 업데이트가 뜨기를 기다리고 있습니다.')
             update = yield from self.queue.get()
-            print(update)
+            asyncio.async(self._process(update))
 
     def reload(self):
         confpath = os.path.join(self.basepath, 'config.json')
@@ -76,6 +76,11 @@ class PushBank:
             else:
                 account = params
                 account['name'] = name
+                for plugin, _ in account.get('plugins').copy().items():
+                    if plugin not in self.plugins:
+                        logger.warn('"{}" 플러그인은 로드되지 않은 플러그인입니다.'.format(
+                            plugin))
+                        del account['plugins'][plugin]
                 self.accounts.append(account)
                 logger.info('"{}" 계좌({})를 리스트에 등록했습니다.'.format(
                     name, bank_name))
@@ -119,5 +124,10 @@ class PushBank:
                     }
                     yield from self.queue.put(data)
             yield from asyncio.sleep(self.interval)
+
+    @asyncio.coroutine
+    def _process(self, update):
+        account, data = update.get('account'), update.get('data')
+
 
 
