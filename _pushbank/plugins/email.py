@@ -40,7 +40,7 @@ class EmailPlugin(Plugin):
         try:
             session = yield from self._smtp_session(**params)
         except Exception as e:
-            logger.error(e.strerror)
+            logger.error(e)
             return
 
         content = self.template.render(**history.as_dict())
@@ -61,7 +61,7 @@ class EmailPlugin(Plugin):
     @asyncio.coroutine
     def _smtp_session(self, server, port, user, passwd, tls):
         session = smtplib.SMTP(server, port)
-        session.elho()
+        session.ehlo()
         if tls:
             session.starttls()
         try:
