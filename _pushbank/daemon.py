@@ -136,7 +136,7 @@ class PushBank:
         plugins = update.get('plugins')
         acc_created = update.get('created', False)
         # 거래내역 비교
-        for up in update.get('data').get('history'):
+        for up in update.get('data').get('history')[::-1]:
             history, created = History.get_or_create(
                 account=account, **up)
             history.save()
