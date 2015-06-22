@@ -24,5 +24,18 @@ class History(BaseModel):
     balance = BigIntegerField()
     distributor = CharField(max_length=20)
 
+    def as_dict(self):
+        d = {
+            'account': self.account,
+            'date': self.date,
+            'type': self.type,
+            'depositor': self.depositor,
+            'pay': self.pay,
+            'withdraw': self.withdraw,
+            'balance': self.balance,
+            'distributor': self.distributor,
+        }
+        return d
+
 db.connect()
 db.create_tables([Account, History], True)
