@@ -39,7 +39,7 @@ class PushBank:
         confpath = os.path.join(self.basepath, 'config.json')
         conf = {}
         try:
-            with open(confpath, 'r') as fd:
+            with open(confpath, 'r', encoding='utf-8') as fd:
                 conf = fd.read()
             self.conf = conf = json.loads(conf)
         except:
