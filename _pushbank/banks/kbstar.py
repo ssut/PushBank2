@@ -34,7 +34,7 @@ def query(account, password, resident, username):
         '다음거래일련번호키': '',
         '계좌번호': account,
         '비밀번호': password,
-        '조회시작일': (datetime.now() - timedelta(days=7)).strftime('%Y%m%d'),
+        '조회시작일': (datetime.now() - timedelta(days=14)).strftime('%Y%m%d'),
         '조회종료일': datetime.now().strftime('%Y%m%d'),
         '주민사업자번호': '000000' + resident,
         '고객식별번호': username.upper(),

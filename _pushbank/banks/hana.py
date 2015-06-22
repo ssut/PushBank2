@@ -35,7 +35,7 @@ def query(account, password, resident):
         'acctPw': password,
         'bkfgResRegNo': resident,
         'curCd': '',
-        'inqStrDt': (datetime.now() - timedelta(days=7)).strftime('%Y%m%d'),
+        'inqStrDt': (datetime.now() - timedelta(days=14)).strftime('%Y%m%d'),
         'inqEndDt': datetime.now().strftime('%Y%m%d'),
         'rvSeqInqYn': 'Y',
         'rcvWdrwDvCd': '',
