@@ -1,4 +1,6 @@
 {
+    "failsafe_count": 7,
+    "failsafe": 120,
     "loglevel": 10,
     "interval": 5,
     "plugins": {

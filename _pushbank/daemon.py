@@ -4,11 +4,11 @@ import inspect
 import json
 import os
 import sys
-from datetime import datetime
+from datetime import datetime, timedelta
 from importlib import import_module
 
 from _pushbank.logger import logger
-from _pushbank.models import *
+from _pushbank.models import Account, History
 from _pushbank.utils import dateutils
 
 class PushBank:
@@ -21,8 +21,11 @@ class PushBank:
         self.basepath = os.path.abspath(os.path.join(
             os.path.dirname(os.path.abspath(__file__)),
             '..'))
+        self.failsafe_count = 5
+        self.failsafe = 120
 
         self._loop = None
+        self._fails = {}
 
     @asyncio.coroutine
     def execute(self, loop):
@@ -48,6 +51,8 @@ class PushBank:
         else:
             logger.setLevel(self.conf.get('loglevel', 10))
             self.interval = self.conf.get('interval', 5)
+            self.failsafe_count = self.conf.get('failsafe_count', 5)
+            self.failsafe = self.conf.get('failsafe', 120)
 
         self.plugins = {}
         for name, params in self.conf.get('plugins').items():
@@ -83,6 +88,7 @@ class PushBank:
                             plugin))
                         del account['plugins'][plugin]
                 self.accounts.append(account)
+                self._fails[name] = [0, datetime.now()]
                 logger.info('"{}" 계좌({})를 리스트에 등록했습니다.'.format(
                     name, bank_name))
 
@@ -101,13 +107,29 @@ class PushBank:
                 query = copy.deepcopy(account)
                 summary = '"{}" 계좌({})'.format(name, bank_name)
                 del query['plugins'], query['bank'], query['name']
+
+                # failsafe가 작동중일 때
+                if self._fails[name][0] == -1:
+                    if self._fails[name][1] <= datetime.now():  # 시간이 만료됐을 때
+                        logger.info('{}의 failsafe가 해제되었습니다.'.format(summary))
+                        self._fails[name][0] = 0
+                    else:
+                        continue
+
                 try:
                     result = yield from bank.query(**query)
                     if 'balance' not in result:
                         raise ValueError()
                 except:
                     logger.warning('{}의 정보를 가져오지 못했습니다.'.format(summary))
+                    self._fails[name][0] += 1
+                    if self._fails[name][0] >= self.failsafe_count:
+                        logger.info('{}의 정보를 {}회 가져오지 못해 failsafe가 작동됩니다.'.format(
+                            summary, self._fails[name][0]))
+                        self._fails[name][0] = -1
+                        self._fails[name][1] = datetime.now() + timedelta(seconds=self.failsafe)
                     continue
+
                 balance = result['balance']
                 # 잔액 비교
                 acc, created = Account.get_or_create(
