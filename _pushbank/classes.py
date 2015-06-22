@@ -1,4 +1,6 @@
 class Plugin:
+    wait = False
+
     def __init__(self, options={}):
         self._options = options
 
