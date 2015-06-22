@@ -9,6 +9,7 @@ from importlib import import_module
 
 from _pushbank.logger import logger
 from _pushbank.models import *
+from _pushbank.utils import dateutils
 
 class PushBank:
     def __init__(self):
@@ -110,7 +111,7 @@ class PushBank:
                 balance = result['balance']
                 # 잔액 비교
                 acc, created = Account.get_or_create(
-                    account=name, defaults={'balance': balance})
+                    account=name, defaults={'balance': -1})
                 if created:
                     logger.info(('{}의 초기 정보를 생성했습니다. ' + \
                         '다음 잔액 변동부터 PushBank가 작동합니다.').format(summary))
@@ -119,15 +120,43 @@ class PushBank:
                     acc.balance = balance
                     acc.save()
                     data = {
+                        'summary': summary,
                         'account': acc,
+                        'plugins': account.get('plugins'),
                         'data': result,
+                        'created': created,
                     }
                     yield from self.queue.put(data)
             yield from asyncio.sleep(self.interval)
 
     @asyncio.coroutine
     def _process(self, update):
+        summary = update.get('summary')
         account, data = update.get('account'), update.get('data')
+        plugins = update.get('plugins')
+        acc_created = update.get('created', False)
+        # 거래내역 비교
+        for up in update.get('data').get('history'):
+            history, created = History.get_or_create(
+                account=account, **up)
+            history.save()
+            if acc_created:  # 첫 실행 시에는 플러그인을 실행하지 않음.
+                continue
+            if created:  # 새로운 변동내역
+                logger.info('{}의 새로운 거래내역을 찾았습니다.'.format(summary))
+                for plugin, params in plugins.items():
+                    logger.debug('{}의 거래내역을 기반으로 "{}" 플러그인을 실행합니다.'.format(
+                        summary, plugin))
+                    yield from self._execute_plugin(plugin, params, account, history)
 
-
+    @asyncio.coroutine
+    def _execute_plugin(self, plugin_name, params, account, history):
+        if plugin_name not in self.plugins:
+            logger.warning('"{}" 플러그인은 로드되지 않은 플러그인입니다.'.format(plugin_name))
+            return
+        plugin = self.plugins[plugin_name]
+        worker = asyncio.async(plugin.execute(account=account, history=history,
+            params=params))
+        if plugin.wait:
+            yield from asyncio.wait([worker])
 
