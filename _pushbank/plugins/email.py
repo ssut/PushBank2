@@ -29,7 +29,7 @@ class EmailPlugin(Plugin):
         p = param
         param = self.options[param]
         user, target = param.get('user'), param.get('target')
-        title = param.get('title').format(bank_name=account.account)
+        title = param.get('title').format(**self.format_args(account, history))
         params = {
             'server': param.get('server'),
             'port': param.get('port'),
@@ -54,7 +54,7 @@ class EmailPlugin(Plugin):
             logger.error('SMTP 서버를 통해 메일을 보내지 못했습니다.')
             traceback.print_exc()
         else:
-            logger.info('"{}" 계좌의 내역을 성공적으로 메일을 발송했습니다. ({})'.format(
+            logger.info('"{}" 계좌의 내역을 성공적으로 메일로 발송했습니다. ({})'.format(
                 account.account, p))
 
 
