@@ -12,10 +12,11 @@ PushBank는 OS X, Linux, Windows를 모두 지원하며 요구사항은 Python 3
 
 * 국민은행
 * 하나은행
+* NH농협은행 ([Jonghwn Hyeon](https://github.com/hyeon0145)님의 기여)
 
 ## 어떻게 사용하나요?
 
-[PushBank 사용하기](https://github.com/ssut/PushBank2/wiki/0.-PushBank-설치하기) 글을 따라서 하시면 됩니다.
+**[PushBank 사용하기](https://github.com/ssut/PushBank2/wiki/0.-PushBank-설치하기) 글을 따라서 하시면 됩니다.**
 
 ## 문제 해결
 
