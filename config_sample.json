@@ -43,6 +43,16 @@
                 "email": ["gmail"],
                 "pushbullet": ["me"]
             }
+        },
+        "농협": {
+            "bank": "nhbank",
+            "account": "12345678901234",
+            "password": "0000",
+            "resident": "1234567",
+            "plugins": {
+                "email": ["gmail"],
+                "pushbullet": ["me"]
+            }
         }
     }
 }
