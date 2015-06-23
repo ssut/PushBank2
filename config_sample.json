@@ -20,6 +20,13 @@
                 "token": "",
                 "title": "{name} 예금액 변동 알림"
             }
+        },
+        "pushover": {
+            "me": {
+                "user": "",
+                "token": "",
+                "title": "{name} 예금액 변동 알림"
+            }
         }
     },
     "accounts": {

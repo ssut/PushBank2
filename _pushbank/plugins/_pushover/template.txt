@@ -1,0 +1,6 @@
+날짜: {{ date }}
+금액: {{ "{:,}".format(withdraw - pay) }}원 {% if withdraw > 0 %}입금{% else %}출금{% endif %}
+잔액: {{ "{:,}".format(balance) }}원
+수취인: {{ depositor }}
+적요: {{ type }}
+거래점: {{ distributor }}
