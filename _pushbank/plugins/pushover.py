@@ -39,7 +39,6 @@ class PushoverPlugin(Plugin):
             'title': title,
             'message': content,
         }
-        print(data)
         r = self.agent.post(self.URL, data=data)
         if r.status_code == 200:
             logger.info('"{}" 계좌의 내역을 성공적으로 Pushover로 발송했습니다. ({})'.format(
