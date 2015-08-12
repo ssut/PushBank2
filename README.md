@@ -1,5 +1,7 @@
 # PushBank2
 
+![](http://i.imgur.com/xaHlAMo.png)
+
 [이전 버전의 PushBank](https://github.com/ssut/PushBank)
 
 더 이상 은행에 수수료를 지불하고 입출금 알람을 받지 마세요. PushBank는 지정된 방법으로 입출금 내역을 전송해줍니다. 
