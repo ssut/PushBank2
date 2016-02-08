@@ -75,7 +75,7 @@ def query(account, password, resident, username):
 
         d['balance'] = balance
         d['history'] = [{
-            'date': datetime.strptime(x[0], '%Y.%m.%d').date(),
+            'date': datetime.strptime(x[0], '%Y.%m.%d%H:%M:%S').date(),
             'type': x[1],
             'depositor': x[2],
             'pay': int(x[4].replace(',', '')),
