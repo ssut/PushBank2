@@ -11,6 +11,7 @@ name = u'하나은행'
 
 _session = requests.Session()
 _url = 'https://open.hanabank.com/quick_service/inquiryAcct02_01.do'
+_kst_timezone = timezone(timedelta(hours=9), 'KST')
 @asyncio.coroutine
 def query(account, password, resident):
     """
@@ -35,8 +36,8 @@ def query(account, password, resident):
         'acctPw': password,
         'bkfgResRegNo': resident,
         'curCd': '',
-        'inqStrDt': (datetime.now() - timedelta(days=14)).strftime('%Y%m%d'),
-        'inqEndDt': datetime.now().strftime('%Y%m%d'),
+        'inqStrDt': (datetime.now(_kst_timezone) - timedelta(days=14)).strftime('%Y%m%d'),
+        'inqEndDt': datetime.now(_kst_timezone).strftime('%Y%m%d'),
         'rvSeqInqYn': 'Y',
         'rcvWdrwDvCd': '',
         'rqstNcnt': '30',

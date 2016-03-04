@@ -1,6 +1,6 @@
 import asyncio
 import re
-from datetime import datetime, timedelta
+from datetime import datetime, timezone, timedelta
 
 import requests
 
@@ -10,6 +10,7 @@ en_name = 'nhbank'
 name = u'농협은행'
 
 _session = requests.Session()
+_kst_timezone = timezone(timedelta(hours=9), 'KST')
 
 def _as_int(text):
     text = re.sub(r'\D', '', text)
@@ -46,8 +47,8 @@ def query(account, password, resident):
         raise ValueError("resident: 주민등록번호 앞 6자리를 입력해주세요.")
 
     tokens = _acquire_tokens()
-    start_date = (datetime.now() - timedelta(days=14)).strftime('%Y%m%d')
-    end_date = datetime.now().strftime('%Y%m%d')
+    start_date = (datetime.now(_kst_timezone) - timedelta(days=14)).strftime('%Y%m%d')
+    end_date = datetime.now(_kst_timezone).strftime('%Y%m%d')
 
     payload = {
         'GjaGbn': '1',

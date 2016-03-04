@@ -11,6 +11,7 @@ name = u'국민은행'
 
 _session = requests.Session()
 _url = 'https://obank.kbstar.com/quics?asfilecode=524517'
+_kst_timezone = timezone(timedelta(hours=9), 'KST')
 @asyncio.coroutine
 def query(account, password, resident, username):
     """
@@ -34,8 +35,8 @@ def query(account, password, resident, username):
         '다음거래일련번호키': '',
         '계좌번호': account,
         '비밀번호': password,
-        '조회시작일': (datetime.now() - timedelta(days=14)).strftime('%Y%m%d'),
-        '조회종료일': datetime.now().strftime('%Y%m%d'),
+        '조회시작일': (datetime.now(_kst_timezone) - timedelta(days=14)).strftime('%Y%m%d'),
+        '조회종료일': datetime.now(_kst_timezone).strftime('%Y%m%d'),
         '주민사업자번호': '000000' + resident,
         '고객식별번호': username.upper(),
         '응답방법': '2',
